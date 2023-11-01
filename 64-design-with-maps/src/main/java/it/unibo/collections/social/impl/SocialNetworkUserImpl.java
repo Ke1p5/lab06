@@ -8,12 +8,9 @@ import it.unibo.collections.social.api.User;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 
@@ -37,6 +34,8 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      * a generic-type Map:  think of what type of keys and values would best suit the requirements
      */
 
+    private Map<String, List<U>> allFollowed ;    
+    
     /*
      * [CONSTRUCTORS]
      *
@@ -62,13 +61,19 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      *            application
      */
     public SocialNetworkUserImpl(final String name, final String surname, final String user, final int userAge) {
-        super(null, null, null, 0);
+        super(name, surname, user, userAge);
+        this.allFollowed = new HashMap<>();
     }
 
     /*
      * 2) Define a further constructor where the age defaults to -1
      */
 
+    public SocialNetworkUserImpl(final String name, final String surname, final String user) {
+        super(name, surname, user, -1);
+        this.allFollowed = new HashMap<>();
+
+    }
     /*
      * [METHODS]
      *
@@ -76,7 +81,10 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      */
     @Override
     public boolean addFollowedUser(final String circle, final U user) {
-        return false;
+        if (this.allFollowed.get(circle) == null) {
+            this.allFollowed.put(circle, new ArrayList<>());
+        }
+        return this.allFollowed.get(circle).add(user);
     }
 
     /**
@@ -86,11 +94,17 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      */
     @Override
     public Collection<U> getFollowedUsersInGroup(final String groupName) {
-        return null;
+        Collection<U> usersGroup = new ArrayList<>(this.allFollowed.get(groupName) != null ? this.allFollowed.get(groupName) : new ArrayList<>());
+        return usersGroup;
     }
 
     @Override
     public List<U> getFollowedUsers() {
-        return null;
+        //Collection<U> usersColl = allFollowed.values();
+        List<U> usersList = new ArrayList<>();
+        for (List<U> group: this.allFollowed.values()) {
+            usersList.addAll(group);
+        }
+        return usersList;
     }
 }
