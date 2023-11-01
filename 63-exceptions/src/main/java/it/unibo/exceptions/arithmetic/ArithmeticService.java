@@ -122,10 +122,10 @@ public final class ArithmeticService {
             default ->  {
                 try {
                 } catch (IllegalStateException e) {
+                    System.out.println("Unknown operand " + operand);
                     throw e;
                 }
                 finally {
-                    System.out.println("Unknown operand " + operand); 
                     yield Double.NaN;
                 }    
             }
